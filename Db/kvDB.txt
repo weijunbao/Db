@@ -1,0 +1,86 @@
+	B+tree
+
+	record pointer 变长.最大2个字节
+		keySize	  | 1 byte
+		key		  | <31 byte
+		valueSize | variableCode
+
+	leaf page:
+		pageIndex | 固定4个字节 | 4 byte
+		pageType  | 4 bit		| 1 byte
+		???????????????????????????????
+		CRC16验证数据是否被破坏
+		???????????????????????????????
+		records   | 1 byte		| 2 byte
+		**********************************
+		实现的时候，固定 2个字节吧。这样简单些
+		N record position variable code				规定position 是与页低直接的距离，这样更多些position可以用1个字节表示
+		**********************************
+
+		nextpage  |4 byte		| 4 byte	last four byte
+
+		/*
+		DataRow：
+		  type    |1bit			|
+		  keySize |
+		*/
+		DataRow:
+		 keySize  |1 byte
+		 key	  |
+		 valueSize|variableCode
+		 value	  |
+		 ofPage   |4 byte（有可能不存在）
+
+		IndexRow:
+		 keySize  |1 byte
+		 key	  |
+		 page	  |4 byte
+
+		OfRow:
+		 valueSize|variableCode
+		 value	  |
+
+	index page: is error
+		pageIndex | 固定4个字节 | 4 byte
+		pageType  | 4 bit		| 1 byte
+		records   | 1 byte		| 1 byte
+		**********************************
+		N record position variable code
+		**********************************
+
+	index page:
+		pageIndex | 固定4个字节 | 4 byte
+		pageType  | 4 bit		| 1 byte
+		records   | 1 byte		| 1 byte	修正为：变长编码。因为1byte未必够
+		
+		依次排列
+		Ptr(0) | Keysize--Key(0) | Ptr(1)
+		Key(0)<Key(1)<Key(2)
+
+	overflow page: 
+		pageIndex | 固定4个字节 | 4 byte
+		pageType  | 4 bit		| 1 byte
+		？？？？？？？？？？？？？？
+		pageType  | 4 bit       | 4 bit
+		hasNOfPage| 4 bit		| 4 bit 是否有next overflow page
+		？？？？？？？？？？？？？？
+		OfRow
+
+		next overflow page//右下角
+
+	page record 的顺序
+		从小到大
+
+补充
+	
+	DBHeader
+	PageSize	512 1024 1024*2	16*1024
+
+	innerNode  record 格式
+	ptr(0)|keySize|key
+	ptr(1)|keySize|key
+	//ptr存储node的编码，我叫PageNo,意思是小于此Key的记录去 ptr所指向的Node里去查
+
+
+	leafpage record格式
+	keySize|key|valueSize|value

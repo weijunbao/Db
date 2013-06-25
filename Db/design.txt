@@ -1,0 +1,18 @@
+1.delete DataRow的时候，如果其是 isOfRow,则保存下ofPageNo,则此页可以直接回收，以及OfRow占用的其它OfPage都是可以回收的
+	设计:
+		a. 可以在第一个OfPageNo里把剩下的其它ofPageNo都保存下来（不知道好不好），这需要在OfPage的结构上做文章,这个可以读取
+			第一个OfPageNo就能回收所有的ofPage
+
+
+2. 溢出规则
+	a.
+	前提：
+		必须保证一个页至少有2条记录(估计保证不了)
+	溢出判定条件:
+		a. value 超过页的2/3 OF_VALUE_SIZE，无条件溢出
+		b. value > 页的一半时 and < OF_VALUE_SIZE ，根据页内空间情况，再考虑是否溢出。
+		c.小于页的1/2时不考虑溢出
+	b. 
+		value > N 就溢出
+
+3. 空间利用率 PageSpaceRate
